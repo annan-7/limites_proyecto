@@ -4,7 +4,7 @@
 
 Proyecto en Python para:
 
-* Aproximar límites numéricamente
+* Calcula límites numéricamente
 * Verificar continuidad
 * Graficar funciones matemáticas
 
@@ -13,17 +13,17 @@ Proyecto en Python para:
 Instalar las librerías necesarias:
 
 ```bash
-pip install matplotlib numpy customtkinter
+pip install matplotlib sympy customtkinter
 ```
 
 ## Ejecutar el proyecto
 
 ```bash
-python main.py
+python limites_v2.py
 ```
 
 ## Librerías utilizadas
 
-* NumPy → cálculos numéricos
+* sympy → cálculos de limites
 * Matplotlib → gráficas matemáticas
 * CustomTkinter → interfaz gráfica
