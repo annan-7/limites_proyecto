@@ -1,6 +1,9 @@
 import customtkinter as ctk
 import matplotlib.pyplot as plt
-from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+from matplotlib.backends.backend_tkagg import (
+    FigureCanvasTkAgg,
+    NavigationToolbar2Tk
+)
 from sympy import limit, Symbol, sympify
 
 
@@ -90,11 +93,18 @@ resultado_label.pack(pady=20)
 
 # Figura y ejes para Matplotlib
 fig, ax = plt.subplots(figsize=(6, 5))
+fig.patch.set_facecolor("#2b2b2b")
+ax.set_facecolor("#2b2b2b")
 ax.set_title("Gráfico")
 ax.set_xlabel("Eje X")
 ax.set_ylabel("Eje Y")
-ax.set_facecolor("black")
-ax.grid(color="gray")
+
+ax.title.set_color("white")
+ax.xaxis.label.set_color("white")
+ax.yaxis.label.set_color("white")
+ax.tick_params(colors="white")
+
+ax.grid()
 
 
 
@@ -105,10 +115,22 @@ canvas = FigureCanvasTkAgg(
     master=frame_derecho
 )
 canvas.draw()
+
+
+    
 canvas.get_tk_widget().pack(
     fill="both",
     expand=True
 )
+
+# Toolbar de Matplotlib
+toolbar = NavigationToolbar2Tk(
+    canvas,
+    frame_derecho
+)
+
+toolbar.update()
+toolbar.pan()
 
 
 
@@ -125,7 +147,7 @@ def obtener_datos():
 
 def graficar_funcion(expresion, valor_a):
     #expersio es la función y valor_a es a que se tiende el x
-    ax.clear()
+   
     x_vals = []
     y_vals = []
     valor = -10
@@ -135,15 +157,20 @@ def graficar_funcion(expresion, valor_a):
     # para evitar que el gráfico se vea distorsionado por valores extremos.
     while valor <= 10:
         try:
+            if abs(valor) < 0.001:
+               valor += 0.01
+               continue
             y = expresion.subs(x, valor).evalf()
-            if abs(y) < 100:
-                x_vals.append(valor)
-                y_vals.append(y)
+            
+            x_vals.append(valor)
+            y_vals.append(y)
         except:
             pass
-        valor += 0.1
+        valor += 0.01
     #Theme de gráfico
-    ax.set_facecolor("black")
+    ax.set_facecolor("#2b2b2b")
+
+
     
     ax.axvline(
       x=valor_a,
@@ -166,10 +193,15 @@ def graficar_funcion(expresion, valor_a):
     ax.plot(
         x_vals,
         y_vals,
-        color="blue"
+        color="#ffffff"
     )
-
+    
     ax.grid(color="gray")
+    ax.title.set_color("white")
+    # cambiar el color de los ejes y las etiquetas a blanco para que se vean en el tema oscuro
+    ax.xaxis.label.set_color("white")
+    ax.yaxis.label.set_color("white")
+    ax.tick_params(colors="white")
     canvas.draw()
 
 
@@ -201,7 +233,27 @@ def calcular_limite_finito():
             text=f"Error: {e}"
         )
 
+#Calcular limite de todo los tipo 
+def calcular_limite():
+    try:
+        expresion, valor_a = obtener_datos()
+        limite = limit(
+            expresion,
+            x,
+            valor_a
+        )
+        resultado_label.configure(
+            text=f"Límite: {limite}"
+        )
+        graficar_funcion(
+            expresion,
+            valor_a
+        )
 
+    except Exception as e:
+        resultado_label.configure(
+            text=f"Error: {e}"
+        )
 
 # Límite infinito
 def calcular_limite_infinito():
@@ -267,6 +319,48 @@ def calcular_limites_laterales():
             text=f"Error: {e}"
         )
 
+def limpiar_grafico():
+
+    ax.clear()
+
+    ax.set_title("Gráfico")
+    ax.set_xlabel("Eje X")
+    ax.set_ylabel("Eje Y")
+
+    ax.set_facecolor("#2b2b2b")
+
+    ax.grid(color="gray")
+
+    ax.title.set_color("white")
+    ax.xaxis.label.set_color("white")
+    ax.yaxis.label.set_color("white")
+    ax.tick_params(colors="white")
+
+    canvas.draw()
+
+    resultado_label.configure(
+        text="Resultado:"
+    )
+
+btn_limpiar = ctk.CTkButton(
+    frame_superior,
+    text="Limpiar",
+    command=limpiar_grafico
+)
+
+btn_limpiar.pack(
+    side="left",
+    padx=10
+)
+# Botón para calcular límite en frame izquierdo
+ 
+boton_calcular = ctk.CTkButton(
+    frame_izquierdo,
+    text="Calcular Límite",
+    command=calcular_limite
+)
+
+boton_calcular.pack(pady=10)
 
 
 # Botones superiores para calcular límites(finito, infinito, laterales)
