@@ -27,9 +27,9 @@ def obtener_datos():
         raise ValueError("Por favor, ingrese tanto la función como el valor de h.")
 
     # Manejo robusto de infinitos para SymPy
-    if h_str in ['oo', 'inf', 'infinity']:
+    if h_str in ['oo', 'inf', 'infinito']:
         h_val = oo
-    elif h_str in ['-oo', '-inf', '-infinity']:
+    elif h_str in ['-oo', '-inf', '-infinito']:
         h_val = -oo
     else:
         try:
