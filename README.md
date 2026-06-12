@@ -1,11 +1,10 @@
-# limites_proyecto_polinomios
+#Hecho por Matias Espinoza, Beatriz Martin, Annan John
 
 # Calculadora de Límites y Graficador
 
 Proyecto en Python para:
 
 * Calcula límites numéricamente
-* Verificar continuidad
 * Graficar funciones matemáticas
 
 ## Dependencias
