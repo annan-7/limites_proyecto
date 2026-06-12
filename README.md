@@ -1,4 +1,4 @@
-#Hecho por Matias Espinoza, Beatriz Martin, Annan John
+Hecho por Matias Espinoza, Beatriz Martin, Annan John
 
 # Calculadora de Límites y Graficador
 
