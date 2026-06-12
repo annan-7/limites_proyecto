@@ -13,7 +13,7 @@ ctk.set_default_color_theme("blue")
 
 app = ctk.CTk()
 app.geometry("1000x650")
-app.title("Analizador de Límites - Lógica Algorítmica MATE1133")
+app.title("Analizador de Límites")
 
 
 # 2. LÓGICA MATEMÁTICA PASO A PASO 
@@ -135,9 +135,9 @@ def obtener_datos():
     if not func_str or not h_str:
         raise ValueError("Ingrese función y valor de h.")
 
-    if h_str in ['oo', 'inf', 'infinity']:
+    if h_str in ['oo', 'inf', ' infinito']:
         h_val = oo
-    elif h_str in ['-oo', '-inf', '-infinity']:
+    elif h_str in ['-oo', '-inf', '-infinito']:
         h_val = -oo
     else:
         try:
