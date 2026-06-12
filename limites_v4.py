@@ -1,7 +1,7 @@
 import customtkinter as ctk
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
-from sympy import Symbol, sympify, oo, simplify, zoo
+from sympy import Symbol, sympify, oo, simplify, zoo, nan 
 
 
 # 1. CONFIGURACIÓN INICIAL
@@ -16,7 +16,7 @@ app.geometry("1000x650")
 app.title("Analizador de Límites - Lógica Algorítmica MATE1133")
 
 
-# 2. LÓGICA MATEMÁTICA PASO A PASO (Lo que pide el profesor)
+# 2. LÓGICA MATEMÁTICA PASO A PASO 
 
 
 
@@ -31,7 +31,7 @@ def evaluar_limite_con_logica(expr, h_val):
     if h_val not in [oo, -oo]:
         try:
             res_directo = expr.subs(x, h_val).evalf()
-            if res_directo.is_finite and not res_directo.has(NaN, zoo):
+            if res_directo.is_finite and not res_directo.has(nan, zoo):
                 historial_pasos.append("1. Sustitución directa exitosa.")
                 return float(res_directo), historial_pasos
         except Exception:
@@ -46,7 +46,7 @@ def evaluar_limite_con_logica(expr, h_val):
             historial_pasos.append(f"2. Indeterminación detectada. Se simplificó a: {expr_simplificada}")
             
             res_simplificado = expr_simplificada.subs(x, h_val).evalf()
-            if res_simplificado.is_finite and not res_simplificado.has(NaN, zoo):
+            if res_simplificado.is_finite and not res_simplificado.has(nan, zoo):
                 historial_pasos.append("3. Sustitución directa tras simplificar fue exitosa.")
                 return float(res_simplificado), historial_pasos
         except Exception:
@@ -57,12 +57,11 @@ def evaluar_limite_con_logica(expr, h_val):
     # PASO 3: Aproximación numérica mediante ciclos (Límites laterales O al infinito)
     if h_val not in [oo, -oo]:
         h_float = float(h_val)
-        epsilon = 0.1
         aprox_izq, aprox_der = None, None
         
         historial_pasos.append("3. Aplicando aproximación numérica (Límites laterales con ciclo for):")
         
-        for i in range(6):
+        for epsilon in [0.1, 0.01, 0.001, 0.0001, 0.00001, 0.000001]:
             val_izq = h_float - epsilon
             val_der = h_float + epsilon
             
@@ -76,12 +75,14 @@ def evaluar_limite_con_logica(expr, h_val):
             except Exception:
                 pass
             
-            epsilon /= 10
+           
 
         if aprox_izq is not None and aprox_der is not None:
-            if abs(aprox_izq - aprox_der) < 0.01:
-                historial_pasos.append(f"   - Los límites laterales convergen a: {(aprox_izq+aprox_der)/2:.4f}")
-                return round((aprox_izq + aprox_der) / 2, 4), historial_pasos
+            promedio = (aprox_izq + aprox_der) / 2
+            tolerancia = max(0.01, 0.001 * (abs(aprox_izq) + abs(aprox_der)) / 2)
+            if abs(aprox_izq - aprox_der) < tolerancia:
+                historial_pasos.append(f"   - Los límites laterales convergen a: {promedio:.6f}")
+                return round(promedio, 6), historial_pasos
             else:
                 historial_pasos.append(f"   - Límites laterales divergen: Izq ≈ {aprox_izq:.4f}, Der ≈ {aprox_der:.4f}")
                 return "No existe", historial_pasos
@@ -150,7 +151,8 @@ def obtener_datos():
 
 def graficar_funcion(expr, h_val):
     ax.clear()
-    x_vals, y_vals = [], []
+    y_vals = []
+    h_float = None
 
     if h_val in [oo, -oo]:
         rango_x = [i * 0.1 for i in range(-100, 101)]
@@ -208,8 +210,8 @@ def calcular_y_graficar():
         graficar_funcion(expr, h_val)
 
     except Exception as e:
-        resultado_label.configure(text=f"Error:\nRevisa la sintaxis.", text_color="red")
-        pasos_label.configure(text="")
+        resultado_label.configure(text=f"Error:\n{str(e)[:120]}", text_color="red")
+        pasos_label.configure(text="Sin resultado — revisa la sintaxis.")
         ax.clear()
         ax.set_facecolor("#2b2b2b")
         canvas.draw()
