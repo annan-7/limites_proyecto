@@ -19,11 +19,11 @@ pip install matplotlib sympy customtkinter
 ## Ejecutar el proyecto
 
 ```bash
-python limites_v2.py
+python limites_v4.py
 ```
 
 ## Librerías utilizadas
 
-* sympy → cálculos de limites
+* sympy → ayuda con cálculos de limites
 * Matplotlib → gráficas matemáticas
 * CustomTkinter → interfaz gráfica
